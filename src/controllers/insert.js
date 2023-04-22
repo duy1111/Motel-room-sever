@@ -1,7 +1,7 @@
 import { insertService ,createPricesAndAreas} from "../services/insert";
 let insert = async (req, res) => {
   try {
-    let response = await createPricesAndAreas();
+    let response = await insertService();
     return res.status(200).json(response);
   } catch (e) {
     return res.status(500).json({

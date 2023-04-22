@@ -2,11 +2,30 @@ import db from '../models';
 import bcrypt from 'bcryptjs';
 import {v4} from 'uuid'
 import generateCode from '../ultis/generateCode';
+import chothuematbang from '../../data/chothuematbang.json'
 import chothuecanho from '../../data/chothuecanho.json'
+import nhachothue from '../../data/nhachothue.json'
+import chothuephongtro from '../../data/chothuephongtro.json'
 import {dataPrice,dataArea} from '../ultis/data'
 import { getNumberFromString } from '../ultis/common';
-import area from '../models/area';
-const dataBody = chothuecanho.body
+const dataBody = [
+    {
+        body: chothuephongtro.body,
+        code: 'CTPT'
+    },
+    {
+        body: chothuematbang.body,
+        code: 'CTMB'
+    },
+    {
+        body: chothuecanho.body,
+        code: 'CTCH'
+    },
+    {
+        body: nhachothue.body,
+        code: 'NCT'
+    },
+]
 
 let hashUserPassword = (password) => {
     return new Promise(async (resolve, reject) => {
@@ -21,11 +40,17 @@ let hashUserPassword = (password) => {
 let insertService = () => {
     return new Promise(async(resolve,reject) => {
         try{
-            dataBody.forEach(async(item) => {
+            const provinceCodes = []
+            const labelCodes = []
+            dataBody.forEach(cate => {
+                cate.body.forEach(async(item) => {
                 let postId = v4()
                 
                 let labelCode = generateCode(item?.header?.class?.classType || '').trim()
-               
+                labelCodes?.every(item => item?.code !== labelCode) && labelCodes.push({
+                    code: labelCode,
+                    value: item?.header?.class?.classType?.trim()
+                })
                 
                 let attributesId= v4()
                 let userId =v4()
@@ -33,6 +58,11 @@ let insertService = () => {
                 let imagesId = v4()
                 let currentArea = getNumberFromString(item?.header?.attributes?.acreage)
                 let currentPrice = getNumberFromString(item?.header?.attributes?.price)
+                let provinceCode =generateCode(item?.header?.address?.split(',').slice(-1)[0]).trim()
+                provinceCodes?.every(item => item?.code !== provinceCode ) && provinceCodes.push({
+                    code: provinceCode,
+                    value: item?.header?.address?.split(',').slice(-1)[0].trim()
+                })
                 await db.Post.create({
                     id: postId,
                     title: item?.header?.title,
@@ -40,13 +70,14 @@ let insertService = () => {
                     labelCode,
                     address: item?.header?.address,
                     attributesId,
-                    categoryCode: 'CTCH',
+                    categoryCode: cate.code,
                     description: JSON.stringify(item?.mainContent?.content),
                     userId,
                     overviewId,
                     imagesId,
-                    priceCode:dataPrice.find(price => price.max >= currentPrice && price.min >= currentPrice)?.code, 
-                    areaCode:dataArea.find(area => area.max >= currentArea && area.min >= currentArea)?.code,
+                    priceCode:dataPrice.find(price => price.max > currentPrice && price.min <= currentPrice)?.code, 
+                    areaCode:dataArea.find(area => area.max > currentArea && area.min <= currentArea)?.code,
+                    provinceCode 
                 })
                 
                 await db.Attribute.create({
@@ -56,6 +87,7 @@ let insertService = () => {
                     published: item?.header?.attributes?.published,
                     hashtag: item?.header?.attributes?.hashtag,
                 })
+                
                 await db.Image.create({
                     id:imagesId,
                     image: JSON.stringify(item?.images)
@@ -92,7 +124,15 @@ let insertService = () => {
                     
 
                 })
+                })
             })
+            provinceCodes?.forEach(async (item) => {
+                await db.Province.create(item)
+            })
+            labelCodes?.forEach(async (item) => {
+                await db.Label.create(item)
+            })
+    
             resolve('Done')
         }
         catch(e){

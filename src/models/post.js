@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.STRING,
     overviewId: DataTypes.STRING,
     imagesId: DataTypes.STRING,
-
+    provinceCode: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Post',

@@ -13,10 +13,24 @@ let getPosts = async(req,res) => {
     }
 }
 let getPostsLimit = async(req,res) => {
-    const {page} = req.query
+    const {page,...query} = req.query
     try{
-        
-        let response = await postService.getPostsLimitService(page)
+        console.log(query)
+        let response = await postService.getPostsLimitService(page,query)
+        return res.status(200).json(response)
+    }
+    catch(e){
+        return res.status(500).json({
+            err:-1,
+            msg: 'Failed at post controller: ' +e
+        })
+    }
+}
+let getNewPostsLimit = async(req,res) => {
+   
+    try{
+       
+        let response = await postService.getNewPostsLimitService()
         return res.status(200).json(response)
     }
     catch(e){
@@ -27,5 +41,5 @@ let getPostsLimit = async(req,res) => {
     }
 }
 export {
-    getPosts,getPostsLimit
+    getPosts,getPostsLimit,getNewPostsLimit
 }

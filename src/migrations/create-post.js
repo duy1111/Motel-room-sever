@@ -34,6 +34,9 @@ module.exports = {
       categoryCode: {
         type: Sequelize.STRING
       },
+      provinceCode: {
+        type: Sequelize.STRING
+      },
       description: {
         type: Sequelize.TEXT
       },
