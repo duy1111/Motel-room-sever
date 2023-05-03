@@ -55,7 +55,7 @@ let registerService = (data) => {
 let loginService = (data) => {
     return new Promise(async(resolve,reject) => {
         try{
-            console.log('check ne',data)
+           
 
             let response = await db.User.findOne({
                 where: {
@@ -63,6 +63,8 @@ let loginService = (data) => {
                 },
                 raw: true,
             })
+            console.log('check ne',response?.password)
+            console.log('check ne',data?.password)
             
 
             let isCorrectPassword = response && bcrypt.compareSync(data.password , response.password)
@@ -75,7 +77,7 @@ let loginService = (data) => {
             },process.env.SECRET_KEY, {expiresIn: '2d'})
             resolve({
                 err: token ? 0 : 2,
-                msg: token ? 'Login is successfully!': response ? "Password is wrong!":'Phone number has been exist!' ,
+                msg: token ? 'Login is successfully!': response ? "Password is wrong!":'Login is faild' ,
                 token: token || null
             })
         }

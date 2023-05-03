@@ -13,10 +13,13 @@ let getPosts = async(req,res) => {
     }
 }
 let getPostsLimit = async(req,res) => {
-    const {page,...query} = req.query
+    
+    const { page, priceNumber, areaNumber, ...query } = req.query
+    
+    
     try{
-        console.log(query)
-        let response = await postService.getPostsLimitService(page,query)
+        console.log(req.query)
+        let response = await postService.getPostsLimitService(page,query, { priceNumber, areaNumber })
         return res.status(200).json(response)
     }
     catch(e){
@@ -40,6 +43,28 @@ let getNewPostsLimit = async(req,res) => {
         })
     }
 }
+let createNewPost = async(req,res) => {
+   
+    try{
+        console.log(req.body)
+        const {categoryCode,title,priceNumber,areaNumber,label } = req.body
+        const {id} = req.user
+        if(!categoryCode || !id || !title || !priceNumber || !areaNumber || !label){
+            return res.status(400).json({
+                err:1,
+                msg:'Missing inputs'
+            })
+        }
+        let response = await postService.createNewPost(req.body,id)
+        return res.status(200).json(response)
+    }
+    catch(e){
+        return res.status(500).json({
+            err:-1,
+            msg: 'Failed at post controller: ' +e
+        })
+    }
+}
 export {
-    getPosts,getPostsLimit,getNewPostsLimit
+    getPosts,getPostsLimit,getNewPostsLimit,createNewPost
 }

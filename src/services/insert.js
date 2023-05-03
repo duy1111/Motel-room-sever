@@ -7,7 +7,7 @@ import chothuecanho from '../../data/chothuecanho.json'
 import nhachothue from '../../data/nhachothue.json'
 import chothuephongtro from '../../data/chothuephongtro.json'
 import {dataPrice,dataArea} from '../ultis/data'
-import { getNumberFromString } from '../ultis/common';
+import { getNumberFromString,getNumberFromStringV2 } from '../ultis/common';
 const dataBody = [
     {
         body: chothuephongtro.body,
@@ -59,6 +59,7 @@ let insertService = () => {
                 let currentArea = getNumberFromString(item?.header?.attributes?.acreage)
                 let currentPrice = getNumberFromString(item?.header?.attributes?.price)
                 let provinceCode =generateCode(item?.header?.address?.split(',').slice(-1)[0]).trim()
+                
                 provinceCodes?.every(item => item?.code !== provinceCode ) && provinceCodes.push({
                     code: provinceCode,
                     value: item?.header?.address?.split(',').slice(-1)[0].trim()
@@ -77,7 +78,9 @@ let insertService = () => {
                     imagesId,
                     priceCode:dataPrice.find(price => price.max > currentPrice && price.min <= currentPrice)?.code, 
                     areaCode:dataArea.find(area => area.max > currentArea && area.min <= currentArea)?.code,
-                    provinceCode 
+                    provinceCode ,
+                    priceNumber: getNumberFromStringV2(item?.header?.attributes?.price),
+                    areaNumber: getNumberFromStringV2(item?.header?.attributes?.acreage)
                 })
                 
                 await db.Attribute.create({
