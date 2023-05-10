@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Area.hasMany(models.Post, {
-        foreignKey:'AreaId',
-        as:'Area'
-      })
+      // Area.hasMany(models.Post, {
+      //   foreignKey:'AreaCode',
+      //   as:'Area'
+      // })
     }
   }
   Area.init({

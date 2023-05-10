@@ -65,6 +65,50 @@ let createNewPost = async(req,res) => {
         })
     }
 }
+let getPostsLimitAdmin = async(req,res) => {
+    
+    const { page, ...query } = req.query
+    const {id} = req.user
+    if(!id){
+        return res.status(400).json({
+            err:-1,
+            msg:'Missing Input'
+        })
+    }
+    try{
+        console.log(req.query)
+        let response = await postService.getPostsLimitAdminService(page,query, id)
+        return res.status(200).json(response)
+    }
+    catch(e){
+        return res.status(500).json({
+            err:-1,
+            msg: 'Failed at post controller: ' +e
+        })
+    }
+}
+let updatePostsAdmin = async(req,res) => {
+    const {postId,attributesId,imagesId,overviewId , ...payload} = req.body
+   
+    
+    if(!postId ||!attributesId ||!imagesId  || !overviewId){
+        return res.status(400).json({
+            err:-1,
+            msg:'Missing Input'
+        })
+    }
+    try{
+       
+        let response = await postService.updatePost(postId,req.body)
+        return res.status(200).json(response)
+    }
+    catch(e){
+        return res.status(500).json({
+            err:-1,
+            msg: 'Failed at post controller: ' +e
+        })
+    }
+}
 export {
-    getPosts,getPostsLimit,getNewPostsLimit,createNewPost
+    getPosts,getPostsLimit,getNewPostsLimit,createNewPost,getPostsLimitAdmin,updatePostsAdmin
 }
