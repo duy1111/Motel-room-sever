@@ -6,7 +6,7 @@ const app = express()
 import initRoutes from './src/routes/index'
 import connectDB from "./src/config/connectDB.js";
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: '*',
     methods: ["POST","GET","PUT","DELETE"]
 }))
 app.use(express.json({limit:'10mb'}))
