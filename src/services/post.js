@@ -32,24 +32,28 @@ let getPostsService = () => {
     }
   });
 };
-let getPostsLimitService = (page, query, { priceNumber, areaNumber }) => {
+let getPostsLimitService = (page, {order,limitPost,...query}, { priceNumber, areaNumber }) => {
   return new Promise(async (resolve, reject) => {
     try {
       let offset = !page || +page <= 1 ? 0 : +page - 1;
       const queries = { ...query };
+      let limit = +limitPost || +process.env.LIMIT
+      queries.limit = limit
       let price = [];
       let area = [];
       if (priceNumber) price = priceNumber.map((item) => +item);
       if (areaNumber) area = areaNumber.map((item) => +item);
-      if (priceNumber) queries.priceNumber = { [Op.between]: price };
-      if (areaNumber) queries.areaNumber = { [Op.between]: area };
+      if (priceNumber) query.priceNumber = { [Op.between]: price };
+      if (areaNumber) query.areaNumber = { [Op.between]: area };
+      if(order) queries.order = [order] || [['createdAt','DESC']]
       console.log(queries);
       let response = await db.Post.findAndCountAll({
         raw: true,
         nest: true,
-        where: queries,
-        offset: offset * +process.env.LIMIT || 0,
-        limit: +process.env.LIMIT,
+        where: query,
+        offset: offset * limit || 0,
+        order:order,
+        ...queries,
         include: [
           { model: db.Image, as: "images", attributes: ["image"] },
           {
@@ -58,6 +62,10 @@ let getPostsLimitService = (page, query, { priceNumber, areaNumber }) => {
             attributes: ["price", "acreage", "published", "hashtag"],
           },
           { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
+          {
+            model: db.Overview,
+            as: "overviews",
+          },
         ],
         attributes: ["id", "title", "star", "address", "description"],
       });
@@ -326,6 +334,26 @@ let updatePost = (postId,data) => {
     }
   });
 };
+let deletePost = (postId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      
+      let response = await db.Post.destroy({
+        where:{
+          id: postId
+        }
+      });
+      resolve({
+        err: response > 0 ? 0 : 1,
+        msg: response > 0 ? "ok" : "No postdelete",
+        
+      });
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
 export {
   getPostsService,
   getPostsLimitService,
@@ -333,4 +361,5 @@ export {
   createNewPost,
   getPostsLimitAdminService,
   updatePost,
+  deletePost,
 };

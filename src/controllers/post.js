@@ -109,6 +109,29 @@ let updatePostsAdmin = async(req,res) => {
         })
     }
 }
+let deletePost = async(req,res) => {
+    
+   
+    const  {postId} = req.query
+    const  {id} = req.user
+    if(!postId || !id){
+        return res.status(400).json({
+            err:-1,
+            msg:'Missing Input'
+        })
+    }
+    try{
+       
+        let response = await postService.deletePost(postId)
+        return res.status(200).json(response)
+    }
+    catch(e){
+        return res.status(500).json({
+            err:-1,
+            msg: 'Failed at post controller: ' +e
+        })
+    }
+}
 export {
-    getPosts,getPostsLimit,getNewPostsLimit,createNewPost,getPostsLimitAdmin,updatePostsAdmin
+    getPosts,getPostsLimit,getNewPostsLimit,createNewPost,getPostsLimitAdmin,updatePostsAdmin,deletePost
 }
