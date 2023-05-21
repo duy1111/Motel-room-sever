@@ -18,7 +18,6 @@ let getPostsLimit = async(req,res) => {
     
     
     try{
-        console.log(req.query)
         let response = await postService.getPostsLimitService(page,query, { priceNumber, areaNumber })
         return res.status(200).json(response)
     }
@@ -46,7 +45,6 @@ let getNewPostsLimit = async(req,res) => {
 let createNewPost = async(req,res) => {
    
     try{
-        console.log(req.body)
         const {categoryCode,title,priceNumber,areaNumber,label } = req.body
         const {id} = req.user
         if(!categoryCode || !id || !title || !priceNumber || !areaNumber || !label){
@@ -76,7 +74,6 @@ let getPostsLimitAdmin = async(req,res) => {
         })
     }
     try{
-        console.log(req.query)
         let response = await postService.getPostsLimitAdminService(page,query, id)
         return res.status(200).json(response)
     }

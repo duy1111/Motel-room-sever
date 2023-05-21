@@ -5,4 +5,6 @@ const router = express.Router()
 router.use(verifyToken)
 router.get('/get-current', controllers.getUser)
 router.put('/update-user',controllers.getUpdateUser)
+router.get('/get-all-user',controllers.getAllUser)
+router.delete('/delete-user',controllers.deleteUser)
 export default router

@@ -33,7 +33,6 @@ let registerService = (data) => {
                 }
 
             })
-            console.log('check pass',hashPassword)
 
             console.log('check',response)
             let token = response[1] && jwt.sign({
