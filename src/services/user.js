@@ -47,6 +47,7 @@ let getUpdateUser = (payload,id) => {
     })
 
 }
+
 //GET ALL USER
 let getAllUser = (page,user,{...query}) => {
     return new Promise(async(resolve,reject) => {

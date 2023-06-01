@@ -29,6 +29,21 @@ export const getUpdateUser = async(req,res) => {
     }
 }
 
+export const getUpdateUserWithAdmin = async(req,res) => {
+    try{
+        let id = req.body.id
+        let payload = req.body
+        let response = await services.getUpdateUser(payload,id)
+        return res.status(200).json(response)
+    }
+    catch(err){
+        return res.status(500).json({
+            err: -1,
+            msg: 'Failed at User controller:' + err
+        })
+    }
+}
+
 export const getAllUser = async(req,res) => {
     const { page } = req.query
     
