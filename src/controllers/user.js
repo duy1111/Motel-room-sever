@@ -16,9 +16,10 @@ export const getUser = async(req,res) => {
 
 export const getUpdateUser = async(req,res) => {
     try{
+        let idUpdateUser = req.body?.id
         let {id} = req.user
         let payload = req.body
-        let response = await services.getUpdateUser(payload,id)
+        let response = await services.getUpdateUser(payload,idUpdateUser? idUpdateUser: id)
         return res.status(200).json(response)
     }
     catch(err){

@@ -1,0 +1,12 @@
+PORT = 8000
+CLIENT_URL = http://localhost:3000
+SECRET_KEY= dsjfkghfdsghsdfkj
+SECRET_GENERATE= phongtro0605
+LIMIT=5
+DB_HOST=dpg-chfmi1ak728sd6mkfhug-a.singapore-postgres.render.com
+DB_NAME=motel_room
+DB_USER_NAME=motel_room_user
+DB_PASSWORD=jcTS0uqhifgz90jUW9PAVLrmZw4bAZXl
+DB_DIALECT=postgres
+DB_PORT=5432
+DB_SSL=true
